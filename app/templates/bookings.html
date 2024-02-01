@@ -1,0 +1,134 @@
+{% from "booking_macro.html" import genBooking, receiptDependencies with context %}
+{% macro fullBookingList(upcomingActivities, upcomingClasses, pastActivities, pastClasses, personalView=True, username=None, accountId=None) -%}
+    <script src="previousBooking.js"></script>
+    {% if (upcomingActivities|length == 0) and (upcomingClasses|length == 0) %}
+        <div class="col-sm-11 card mx-auto px-0 my-3">
+            <div class="card-body text-center">
+                <span class="fs-4">
+                    {% if personalView %}
+                        You have no bookings.
+                    {% else %}
+                        No bookings.
+                    {% endif %}
+                </span>
+                <div class="row justify-content-center mt-2">
+                    <div class="col">
+                        {% if personalView %}
+                            <a href="/activities" class="btn btn-primary">Book Now</a>
+                        {% else %}
+                            <a href="/user_booking?accountId={{ accountId }}" class="btn btn-primary">Make booking for {{ username }}</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row py-1">
+            {% if upcomingActivities|length > 0 %}
+                <div class="col-sm-{% if upcomingClasses|length == 0 %}11{% else %}5{% endif %} card mx-auto px-0 my-3">
+                    <div class="card-header fs-4">
+                        <span class="fw-semibold">{% if personalView %}My {% endif %}Activities</span>
+                    </div>
+                    <ul class="list-group list-group-flush card-body p-2">
+                        {% for booking in upcomingActivities %}
+                            {{ genBooking(booking) }}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            {% if upcomingClasses|length > 0 %}
+                <div class="col-sm-{% if upcomingActivities|length == 0 %}11{% else %}6{% endif %} card mx-auto px-0 my-3">
+                    <div class="card-header fs-4">
+                        <span class="fw-semibold">{% if personalView %}My {% endif %}Classes</span>
+                    </div>
+                    <ul class="list-group list-group-flush card-body p-2">
+                        {% for booking in upcomingClasses %}
+                            {{ genBooking(booking) }}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+    <h1>Previous Bookings</h1>
+    {% if (pastActivities|length == 0) and (pastClasses|length == 0) %}
+        <div class="col-sm-11 card mx-auto px-0 my-3">
+            <div class="card-body text-center">
+                <span class="fs-4">
+                    {% if personalView %}
+                        You have no previous bookings.
+                    {% else %}
+                        No previous bookings.
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    {% else %}
+        {% set activityPages = pastActivities|length // 10 %}
+        {% if pastActivities|length % 10 != 0 %}{% set activityPages = activityPages + 1 %}{% endif %}
+        {% set classPages = pastClasses|length // 10 %}
+        {% if pastClasses|length % 10 != 0 %}{% set classPages = classPages + 1 %}{% endif %}
+        <div class="row py-1">
+            {% if pastActivities|length !=0 %}
+            <div class="col-sm-{% if pastClasses|length == 0 %}11{% else %}5{% endif %} card mx-auto px-0 my-3">
+                <div class="card-header fs-4">
+                    <span class="fw-semibold">Activities</span>
+                </div>
+                {% for page in range(activityPages) %}
+                    {% set startIndex = page * 10 %}
+                    {% set endIndex = (page + 1) * 10 %}
+                    <ul class="list-group list-group-flush card-body p-2{% if page != 0 %} d-none{% endif %} activity-page" id="activity-page-{{ page }}">
+                        {% for booking in pastActivities[startIndex:endIndex] %}
+                            {{ genBooking(booking, False) }}
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+                <nav aria-label="Activity pages">
+                    <ul class="pagination justify-content-center my-3">
+                        {% for page in range(activityPages) %}
+                            <li class="activity-page page-item{% if page == 0 %} active{% endif %}">
+                                <a class="page-link" href="#activity-page-{{ page }}" onclick="showPage('activity-page', {{ page }})">{{ page + 1 }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+            {% if pastClasses|length != 0 %}
+            <div class="col-sm-{% if pastActivities|length == 0 %}11{% else %}6{% endif %} card mx-auto px-0 my-3">
+                <div class="card-header fs-4">
+                    <span class="fw-semibold">Classes</span>
+                </div>
+                {% for page in range(classPages) %}
+                    {% set startIndex = page * 10 %}
+                    {% set endIndex = (page + 1) * 10 %}
+                    <ul class="list-group list-group-flush card-body p-2{% if page != 0 %} d-none{% endif %} class-page" id="class-page-{{ page }}">
+                        {% for booking in pastClasses[startIndex:endIndex] %}
+                            {{ genBooking(booking, False) }}
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+                <nav aria-label="Class pages">
+                    <ul class="pagination justify-content-center my-3">
+                        {% for page in range(classPages) %}
+                            <li class="class-page page-item{% if page == 0 %} active{% endif %}">
+                                <a class="page-link" href="#class-page-{{ page }}" onclick="showPage('class-page', {{ page }})">{{ page + 1 }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endmacro -%}
+{% extends "base.html" %}
+{% block title %}My Bookings{% endblock %}
+{% block content %}
+    <h1>Bookings</h1>
+    {{ fullBookingList(upcomingActivities, upcomingClasses, pastActivities, pastClasses) }}
+    {{ receiptDependencies() }}
+{% endblock %}
+
+
+

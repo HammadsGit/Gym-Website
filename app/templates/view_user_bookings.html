@@ -1,0 +1,30 @@
+{% from "bookings.html" import fullBookingList with context %}
+{% extends "base.html" %}
+{% block title %}User Bookings{% endblock %}
+{% block content %}
+    <div class="row py-1 mx-3">
+        <form class="col-sm card px-0 my-1" method="post" action="">
+            <div class="card-header fs-4 fw-semibold">
+                Select User Account
+            </div>
+            <div class="card-body">
+                <p class="">Select the user to view the bookings for.</p>
+
+                {{ form.hidden_tag() }}
+                {{ form.userId(cols='80',class_='form-group mb-3 mt-0') }}
+            </div>
+            <div class="card-footer">
+                <input
+                    type="submit"
+                    class="btn btn-secondary"
+                    id="submit"
+                    value="Select User"
+                />
+            </div>
+        </form>
+    </div>
+    {% if username is defined %}
+        <h1>Bookings for {{ username }}</h1>
+        {{ fullBookingList(upcomingActivities, upcomingClasses, pastActivities, pastClasses, False, username, accountId) }}
+    {% endif %}
+{% endblock %}

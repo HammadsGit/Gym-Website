@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Payment{% endblock %}
+{% block content %}
+  <h1>Payment Page</h1>
+  {% if error %}
+    <p class="error">{{ error }}</p>
+  {% endif %}
+    <br>
+    <form action="" method="post" name="Card_Payment" >
+        {%  if membership == '1' %}
+            <h4>You are Buying the bronze membership! </h4>
+            <h4>Cost: £{{ prices.Single.value[1] }} per day</h4>
+        {%  endif %}
+        {%  if membership == '2' %}
+            <h4>You are Buying the Gold membership! </h4>
+            <h4>Cost: £{{ prices.Month.value[1] }} per month </h4>
+        {%  endif %}
+
+        {%  if membership == '3' %}
+            <h4>You are Buying the Platinum membership! </h4>
+            <h4>Cost: £{{ prices.Year.value[1] }} per year </h4>
+
+        {%  endif %}
+
+        <br>
+
+        {{ form.hidden_tag() }}
+        <h5>Name: </h5>
+        {{ form.Name(cols='80',class_='form-control') }}<br>
+        <h5>Card_Number: </h5>
+        {{ form.Card_Number(cols='80',class_='form-control') }}<br>
+        <h5>Expiry_Date: </h5>
+        {{ form.Expiry_Date(cols='80',class_='form-control') }}<br>
+        <h5>CVV: </h5>
+        {{ form.CVV(cols='80',class_='form-control') }}<br>
+
+    <p><input type="submit" class="btn btn-secondary" value="Pay"></p>
+    </form>
+{% endblock %}

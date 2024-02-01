@@ -1,0 +1,100 @@
+/* Open Color: https://yeun.github.io/open-color/ */
+/* @import "open-color.css"; */
+
+:root {
+    --bs-info: var(--oc-red-9);
+    --bs-info-rgb: var(--oc-red-9-rgb);
+    --bs-info-bg-subtle: var(--oc-red-0);
+    --bs-info-bg-subtle-rgb: var(--oc-red-0-rgb);
+    --bs-info-border-subtle: var(--oc-red-1);
+    --bs-info-text: var(--oc-red-9);
+    --bs-info-text-rgb: var(--oc-red-9-rgb);
+    --bs-info-text-emphasis: var(--oc-red-9);
+
+    --bs-light: var(--oc-red-1);
+    --bs-light-rgb: var(--oc-red-1-rgb);
+
+    --bs-dark: var(--oc-gray-9);
+    --bs-dark-rgb: var(--oc-gray-9-rgb);
+
+    /* Page Background Colour */
+    --bs-body-bg: var(--oc-red-0);
+    --bs-body-bg-rgb: var(--oc-red-0-rgb);
+
+    --bs-border-radius: var(--bs-border-radius-lg) !important;
+}
+
+html[data-bs-theme=dark] body {
+    --bs-body-bg: var(--oc-gray-9);
+    --bs-body-bg-rgb: var(--oc-gray-9-rgb);
+}
+
+html[data-bs-theme=dark] .btn.btn-dark {
+    --bs-btn-bg: var(--oc-gray-7);
+}
+
+html[data-bs-theme=dark] select.form-select,
+html[data-bs-theme=dark] input.form-control {
+    /* equivalent to bg-dark, not sure why Bootstrap doesn't do this itself */
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
+}
+
+.bg-frosted {
+    background-color: rgba(var(--bs-body-bg-rgb), 0.8);
+    backdrop-filter: blur(2px);
+}
+
+html:not([data-bs-theme=dark]) .bg-frosted .navbar-toggler-icon {
+    filter: invert(100%);
+}
+
+.card {
+    --bs-card-cap-bg: rgba(var(--oc-red-9-rgb), 0.03) !important;
+    /* Equivalent to applying "shadow-sm border rounded-3" to every card */
+    border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+    border-radius: var(--bs-border-radius-lg) !important;
+}
+
+.card:not(.no-shadow) {
+    box-shadow: 0 .125rem .25rem rgba(var(--bs-body-color-rgb), .075);
+}
+
+.btn-light {
+    border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+}
+
+.btn-secondary {
+    border: calc(var(--bs-border-width) * 2) var(--bs-border-style) rgba(0, 0, 0, 0.08);
+}
+/*
+.bg-brown {
+    background-color: #CEA175;
+}
+
+.bg-gold {
+    background-color: #D2B450;
+}
+
+.bg-platinum {
+    background-color: #E5E4E2;
+}
+*/ 
+
+.bg-gold {
+    background-color: var(--oc-yellow-3);
+}
+
+.bg-brown {
+    background-color: var(--oc-orange-2);
+}
+
+.bg-platinum {
+    background-color: var(--oc-gray-3);
+}
+
+.rounded-3 svg,
+.card svg {
+    border-radius: var(--bs-border-radius-lg) !important;
+}
+

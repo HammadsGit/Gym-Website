@@ -1,0 +1,89 @@
+.page {
+    margin: 6rem 10% 3rem 10%;
+}
+
+@media (max-width: 1000px) {
+    .page {
+        margin: 5rem 5% 5rem 5%;
+    }
+}
+
+.alert-box.floating {
+    position: fixed;
+    bottom: 1rem;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 50;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.flex-expand-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.mx-quarter {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+}
+
+.px-quarter {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+
+.text-align-end {
+    text-align: end;
+}
+
+input.form-group {
+    box-sizing: border-box;
+    width: auto;
+}
+
+.mw-max-content {
+    min-width: max-content;
+}
+
+.w-120 {
+    width: 120%;
+}
+
+.link-muted a,
+.link-muted:link a,
+.link-muted:visited a {
+    color: var(--bs-secondary-color) !important;
+    text-decoration: none;
+}
+
+.link-muted:hover,
+.link-muted:focus,
+.link-muted:active {
+    color: rgb(0, 0, 0);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+nav svg {
+    height: 50px;
+    width: auto;
+}
+
+.modal-dialog svg {
+    height: 80px;
+    width: auto;
+}
+
+.end-2 {
+    right: 2rem;
+}
+
+@media print {
+    @page { margin: 0; }
+    body  { margin: 1.6cm; }
+    a[href]:after { content: none !important; }
+    img[src]:after { content: none !important; }
+}

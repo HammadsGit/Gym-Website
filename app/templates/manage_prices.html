@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Prices{% endblock %}
+{% block content %}
+    <h1 class="title">Manage prices</h1>
+    <div>
+        <form action="" method="post" name="prices">
+            <div class="row">
+                <div class="col-sm card px-0 m-1">
+                    <h3 class="card-header fs-4 fw-bold">Single Entry</h3>
+                    <div class="card-body">
+                        <p>Current Single Entry price: £{% for price in prices %} {% if price.name == "Single" %} {{price.price}} {% endif %}{% endfor %}</p>
+                    </div>
+                    <div class="card-footer">
+                        <label for="bronze_price" class="form-label">New Single Entry price:</label>
+                        <div class="input-group">
+                            <span class="input-group-text">£</span>
+                            <input type="number" class="form-control" min="0" step="0.01" placeholder="{% for price in prices %} {% if price.name == 'Single' %} {{price.price}} {% endif %}{% endfor %}" id="bronze_price" name="bronze_price">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm card px-0 m-1">
+                    <h3 class="card-header fs-4 fw-bold">Gold membership</h3>
+                    <div class="card-body">
+                        <p>Current Gold membership price: £{% for price in prices %} {% if price.name == "Month" %} {{price.price}} {% endif %}{% endfor %}</p>
+                    </div>
+                    <div class="card-footer">
+                        <label for="gold_price" class="form-label">New Gold membership price:</label>
+                        <div class="input-group">
+                            <span class="input-group-text">£</span>
+                            <input type="number" class="form-control" min="0" step="0.01" placeholder="{% for price in prices %} {% if price.name == 'Month' %} {{price.price}} {% endif %}{% endfor %}" id="gold_price" name="gold_price">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm card px-0 m-1">
+                    <h3 class="card-header fs-4 fw-bold">Platinum membership</h3>
+                    <div class="card-body">
+                        <p>Current Platinum membership price: £{% for price in prices %} {% if price.name == "Year" %} {{price.price}} {% endif %}{% endfor %}</p>
+                    </div>
+                    <div class="card-footer">
+                        <label for="platinum_price" class="form-label">New Platinum membership price:</label>
+                        <div class="input-group">
+                            <span class="input-group-text">£</span>
+                            <input type="number" class="form-control" min="0" step="0.01" placeholder="{% for price in prices %} {% if price.name == 'Year' %} {{price.price}} {% endif %}{% endfor %}" id="platinum_price" name="platinum_price">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-2">
+                <div class="col-12 d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Change</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+<div class="input-group mb-3">
+  <span class="input-group-text">$</span>
+  <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+  <span class="input-group-text">.00</span>
+</div>
+

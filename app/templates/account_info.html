@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Account Info{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="card col-sm-5 my-2 mx-auto px-0">
+            <div class="card-header fs-4">
+                <span class="fw-semibold">{{ data.firstname }} {{ data.surname }}</span>
+            </div>
+            <div class = "card-body">
+                <h5 class="card-title"> Account Information</h5>
+                <p> First Name: {{ data.firstname }} </p>
+                <p> Last Name: {{ data.surname }} </p>
+                <p> Username: {{ data.username }}<p>
+                <p> Email: {{ data.email }} </p>
+                <a href="/change_password"><button type="button" class="btn btn-primary selectable">Change Password</button></a>
+                <br>
+                <br>
+                {% if current_user.facebookid is not none %}
+                    {% if current_user.password != emptyStr %}
+                    <a href="/unlink_account_from_facebook"><button type="button" class="btn btn-primary selectable">Unlink Facebook Account</button></a>
+                    {% else %}
+                    <a href="/change_password"><button type="button" class="btn btn-primary selectable">Add Password To Your Account To Unlink Facebook Account</button></a>
+                    {% endif %}
+                {% else %}
+                <a href="/link_account_with_facebook"><button type="button" class="btn btn-primary selectable">Link Facebook Account</button></a>
+                {% endif %}
+                <br>
+                <br>
+                {% if current_user.googleid is not none %}
+                    {% if current_user.password != emptyStr %}
+                    <a href="/unlink_account_from_google"><button type="button" class="btn btn-primary selectable">Unlink Google Account</button></a>
+                    {% else %}
+                    <a href="/change_password"><button type="button" class="btn btn-primary selectable">Add Password To Your Account To Unlink Google Account</button></a>
+                    {% endif %}
+                {% else %}
+                <a href="/link_account_with_google"><button type="button" class="btn btn-primary selectable">Link Google Account</button></a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card col-sm-6 my-2 mx-auto px-0">
+            <div class="card-header fs-4">
+                <span class="fw-semibold">Address</span>
+                <span class="btn btn-sm btn-primary float-end align-middle" id="account-edit-address" aria-label="Button to enable editing of address">Edit <i class="ri-edit-line ms-1"></i></span>
+            </div>
+            <div class="card-body" id="account-address-fields">
+                <div class="mb-2">
+                    <label class="my-1" for="account-address-line1">Line 1:</label>
+                    <div class="input-group">
+                        <input disabled autocomplete="off" type="text" class="form-control" id="account-address-line1" value="{% if address.line1 is not none %}{{ address.line1 }}{% endif %}">
+                    </div>
+                    <label class="my-1" for="account-address-line2">Line 2:</label>
+                    <div class="input-group">
+                        <input disabled autocomplete="off" type="text" class="form-control" id="account-address-line2" value="{% if address.line2 is not none %}{{ address.line2 }}{% endif %}">
+                    </div>
+                    <label class="my-1" for="account-address-line3">Line 3:</label>
+                    <div class="input-group">
+                        <input disabled autocomplete="off" type="text" class="form-control" id="account-address-line3" value="{% if address.line3 is not none %}{{ address.line3 }}{% endif %}">
+                    </div>
+                </div>
+                <div class="">
+                    <label class="my-1" for="account-address-city">City:</label>
+                    <div class="input-group">
+                        <input disabled autocomplete="off" type="text" class="form-control" id="account-address-city" value="{% if address.city is not none %}{{ address.city }}{% endif %}">
+                    </div>
+                    <label class="my-1" for="account-address-postcode">Post Code:</label>
+                    <div class="input-group">
+                        <input disabled autocomplete="off" type="text" class="form-control" id="account-address-postcode" value="{% if address.postcode is not none %}{{ address.postcode }}{% endif %}">
+                    </div>
+                    <label class="my-1" for="account-address-country">Country:</label>
+                    <div class="input-group">
+                        <input disabled autocomplete="off" type="text" class="form-control" id="account-address-country" value="{% if address.country is not none %}{{ address.country }}{% endif %}">
+                    </div>
+                    <label class="my-1" for="account-address-phone">Phone No.</label>
+                    <div class="input-group">
+                        <input disabled autocomplete="off" type="text" class="form-control" id="account-address-phone" value="{% if address.phone is not none %}{{ address.phone }}{% endif %}">
+                    </div>
+                </div> 
+            </div>
+        </div>
+        <div class="card col-11 mx-auto px-0 my-2">
+            <div class="card-header fs-4">
+                <span class="fw-semibold">Purchases</span>
+            </div>
+            {% if receipts|length == 0 %}
+                <div class="card-body text-center">
+                    <span class="fs-4">None yet!</span>
+                    <div class="row justify-content-center mt-2">
+                        <div class="col">
+                            <a href="/pricing" class="btn btn-primary mx-1">Become a Member</a>
+                            <a href="/activities" class="btn btn-primary mx-1">Make a booking</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <table class="table mx-2">
+                    <tbody>
+                        {% for receipt in receipts %}
+                            <tr>
+                                <td class="fw-semibold fs-4 align-middle pe-4" aria-label="Number of item purchased">{{ receipt.itemCount }}&times;</td>
+                                <td>
+                                    <span class="row fs-5" aria-label="Name of item(s) purchased">{{ receipt.itemName }}</span>
+                                    <span class="row text-muted" aria-label="Date of purchase">{{ receipt.date }}</span>
+                                </td>
+                                <td class="text-align-end align-middle">
+                                    {% if receipt.discountPct > 0 %}
+                                        <span class="badge rounded-pill bg-primary py-2 my-1 me-4">
+                                            <span class="fs-6 p-2" aria-label="Discount percentage applied">Discount ({{ receipt.discountPct }}%)</span>
+                                        </span>
+                                    {% endif %}
+                                    {% if receipt.itemCount > 1 or receipt.discountPct > 0 %}
+                                        <span class="pe-4 text-muted" aria-label="Number of items multiplied by price, with discount subtracted if applicable">
+                                            {{ receipt.itemCount }} &times; £{{ receipt.itemPrice }}
+                                            {% if receipt.discountPct > 0 %}
+                                                 - {{ receipt.discountPct }}%
+                                             {% endif %}
+                                            :
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="align-middle">
+                                    <span class="pe-4 fs-4 fw-semibold" aria-label="Total Price">£{{ receipt.totalPrice }}</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+    <script src="alert.js"></script>
+    <script src="account_info.js"></script>
+{% endblock %}

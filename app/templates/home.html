@@ -1,0 +1,116 @@
+{% from "booking_macro.html" import genBooking with context %}
+{% macro bookingOverflow() -%}
+    <li class="list-group-item d-grid gap-2">
+        <a href="/bookings" class="btn btn-sm btn-outline-primary">See more bookings</a>
+    </li>
+{% endmacro -%}
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    <h1 class="text-center">Welcome to GymCorp</h1>
+    <div class="row py-1 flex-expand-row">
+        {% if not current_user.is_authenticated %}
+            <div class="col-sm-8 card px-0 mx-auto my-3">
+                <div class="card-header fw-semibold fs-3">About us</div>
+                <div class="card-body">
+                    GymCorp provides a wide range of facilities, activities and classes, all accessible through a flexible range of pricing options, so that anyone can excersise in a well-equipped, comfortable environment.
+                </div>
+                <div class="card-footer">
+                    <a href="/facilities" class="btn btn-outline-primary">Our Facilities</a>
+                    <a href="/activities" class="btn btn-outline-primary">Our Activities & Classes</a>
+                    <a href="/pricing" class="btn btn-outline-primary">Our Pricing</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-sm-5 card px-0 mx-auto my-3" id="capacity-card">
+                <div class="card-header fs-4 capacity-header d-flex flex-expand-row align-items-baseline">
+                    <span class="capacity-header-text fw-bold"></span>
+                    <span class="capacity-header-updated text-muted fs-6"></span>
+                </div>
+                <div class="card-body capacity-body">
+                </div>
+            </div>
+            <div class="col-sm-5 card px-0 mx-auto my-3 d-flex flex-column">
+                {% if membership and membership.active %}
+                    {% if membership.entryType == 1 %}
+                        <div class="card-header fs-4 bg-gold fw-bold text-black text-center">Membership Type: Gold </div>
+                    {% elif membership.entryType == 2 %}
+                        <div class="card-header fs-4 bg-platinum fw-bold text-black text-center">Membership Type: Platinum</div>
+                    {% endif %}
+                    <div class="card-body">
+                        <ul>
+                            <li>Membership Start Date: {{ membership.startDate.strftime('%b/%d/%Y') }}</li>
+                            <li>Membership End Date: {{ membership.endDate.strftime('%b/%d/%Y') }}</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer d-grid gap-2">
+                            <a href="/cancel_membership" class="btn btn-primary mt-auto">Cancel Membership</a>
+                    </div>
+                {% else %}
+                    <div class="card-header fs-4 fw-semibold">You don't have a membership</div>
+                    <div class="card-body">
+                        Sign up on the pricing page and start saving today!
+                    </div>
+                    <div class="card-footer d-grid gap-2">
+                        <a href="/pricing" class="btn btn-primary mt-auto">Buy a Membership</a>
+                    </div>
+                {% endif %}
+            </div>
+            {% if (upcomingBookings|length > 0) or (upcomingClasses|length > 0) %}
+                {% if upcomingBookings|length != 0 %}
+                    <div class="col-xl-{% if upcomingClasses|length > 0 %}3{% else %}6{% endif %} card mx-auto px-0 my-3">
+                        <div class="card-header fs-4">
+                            <span class="fw-semibold">Upcoming Bookings</span>
+                        </div>
+                        <ul class="list-group list-group-flush card-body p-2">
+                            {% for booking in upcomingBookings[:activityCap] %}
+                                {{ genBooking(booking, True, False) }}
+                            {% endfor %}
+                            {% if upcomingBookings|length > activityCap %}
+                                {{ bookingOverflow() }}
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+                {% if upcomingClasses|length != 0 %}
+                <div class="col-xl-{% if upcomingBookings|length > 0 %}3{% else %}6{% endif %} card mx-auto px-0 my-3">
+                    <div class="card-header fs-4">
+                        <span class="fw-semibold">Upcoming Classes</span>
+                    </div>
+                    <ul class="list-group list-group-flush card-body p-2">
+                        {% for booking in upcomingClasses[:activityCap] %}
+                            {{ genBooking(booking, True, False) }}
+                        {% endfor %}
+                        {% if upcomingClasses|length > activityCap %}
+                            {{ bookingOverflow() }}
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endif %}
+                <div class="col-xl-4 card mx-auto px-0 my-3" id="motivation-card">
+                    {% if weekBookingCount == 0 %}
+                        {% set motivation_header = "You haven't visited this week." %}
+                        {% set motivation_body = "Go to the activities page to make a booking." %}
+                    {% else %}
+                        {% if weekBookingCount == 1 %}
+                            {% set motivation_header = "You've visited COUNT time this week." %}
+                        {% else %}
+                            {% set motivation_header = "You've visited COUNT times this week." %}
+                        {% endif %}
+                        {% set motivation_body = "Keep it up!" %}
+                    {% endif %}
+                    <div class="card-header fs-4 fw-bold motivation-header">
+                        {{ motivation_header|replace("COUNT", weekBookingCount) }}
+                    </div>
+                    <div class="card-body d-flex align-items-center justify-content-center motivation-body">
+                        <span class="text-center">{{ motivation_body }}</span>
+                    </div>
+                    <div class="card-footer d-grid gap-2">
+                        <a href="/activities" class="btn btn-primary">Book Now</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+    <script src="home.js"></script>
+{% endblock %}

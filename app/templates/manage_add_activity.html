@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}{% if isEditing is defined %}Edit{% else %}Add{% endif %} Activity{% endblock %}
+{% block content %}
+    <h2>
+        {% if isEditing is defined %}
+            Edit activity
+        {% else %}
+            Add activity to {{ facName }}
+        {% endif %}
+    </h2>
+    <form class="form" action="" method="post" id="activity-form">
+        {% if isEditing is defined %}
+        <!-- Hidden, indicates whether this form is editing or adding an activity, and the ID of the activity -->
+        <input class="hidden" autocomplete="off" type="checkbox" value="true" aria-label="Check to indicate whether adding or editing an activity" id="isEditing" name="isEditing">
+        <input class="hidden" autocomplete="off" type="text" value="{{ activityId }}" id="activityID" name="activityID">
+        {% endif %}
+        <!-- Hidden, this is checked automatically by javascript when necessary -->
+        <input class="hidden" type="checkbox" value="" aria-label="Check for whether activity occurs on a specific day" id="activitySpecificDay" name="activitySpecificDay">
+
+        <div class="card card-body mb-2">
+            <label class="form-label" for="activityName">Activity Name:</label>
+            <div class="input-group">
+                <input class="form-control" type="text" id="activityName" name="activityName">
+            </div>
+            <label class="form-label" for="activityCapacity">Capacity (Optional):</label>
+            <div class="input-group">
+                <input class="form-control" type="number" id="activityCapacity" name="activityCapacity" placeholder="{{ facCapacity }}" min="0">
+            </div>
+
+            <label class="form-label" for="activityLength">Length (Hours):</label>
+            <div class="input-group">
+                <div class="input-group-text">
+                    <input class="form-check-input" type="checkbox" value="" aria-label="Check for whether the activity has a length" id="activityLengthDefined" name="activityLengthDefined">
+                </div>
+                <input class="form-control" type="number" step="1" id="activityLength" name="activityLength" value="1">
+            </div>
+        </div>
+        <div class="card card-body hidden my-2" id="add-timeslot-button-card">
+            <div class="d-grid gap-2 my-2">
+                <span role="button" class="btn btn-secondary" id="add-timeslot-button" aria-label="Button to add a timeslot to this class">Add Timeslot</span>
+            </div>
+        </div>
+        <div class="card card-body">
+            <div class="d-grid gap-2 my-2">
+            <button class="btn btn-primary" type="submit">{% if isEditing is defined %}Save{% else %}Add{% endif %}</button>
+            </div>
+        </div>
+    </form>
+    <script src="manage_add_activity.js"></script>
+    <script>
+        {% if isEditing is defined %}
+            setData("{{ activityName }}", {{ activityCapacity }}{% if activityLength is defined %}, {{ activityLength }}{% endif %});
+            {% for activityLocation in activityLocations %}
+                appendTimeslot("{{ activityLocation.id }}", "{{ activityLocation.startDay }}", "{{ activityLocation.startTime }}");  
+            {% endfor %}
+        {% endif %}
+    </script>
+{% endblock %}
+

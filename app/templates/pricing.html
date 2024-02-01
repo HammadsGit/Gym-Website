@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Pricing{% endblock %}    
+{% block content %}
+<h1>Pricing</h1>
+<div class="row">
+  <div class="col-sm card px-0 m-1 d-flex flex-column">
+    <div class="card-header fs-2 bg-brown fw-bold text-black text-center">Book Session</div>
+    <h2 class="card-title pricing-card-title pt-3 pb-0 text-center" aria-label="Price of single session">£{% for price in prices %} {% if price.name == "Single" %} {{price.price}} {% endif %}{% endfor %} <small class="text-muted">/ session</small></h2>
+    <div class="card-body">
+        <ul>
+          <li>Book an individual session.</li>
+          <li>Available to anyone aged 16 or over.</li>
+        </ul>
+    </div>
+    <div class="card-footer d-grid gap-2">
+        {% if current_user.is_authenticated %}
+            <a href="/activities" class="btn btn-primary mt-auto">Book</a>
+        {% else %}
+            <a href="/login" class="btn btn-primary mt-auto">Login to Book Session</a>
+        {% endif %}
+    </div>
+  </div>
+
+
+  <div class="col-sm card px-0 m-1">
+    <div class="card-header fs-2 bg-gold fw-bold text-black text-center">Gold</div>
+    <h2 class="card-title pricing-card-title pt-3 pb-0 text-center" aria-label="Price of subscription">£{% for price in prices %} {% if price.name == "Month" %} {{price.price}} {% endif %}{% endfor %} <small class="text-muted">/ monthly</small></h2>
+    <div class="card-body">
+        <ul>
+          <li>Access to all of our facilities and activities for a month.</li>
+          <li>Available to anyone aged 16 or over.</li>
+          <li>Our membership is a rolling contract, so you can cancel at any time.</li>
+        </ul>
+    </div>
+    <div class="card-footer d-grid gap-2">
+        {% if current_user.is_authenticated %}
+          {% if membership %}
+            {% if membership.entryType == 1 %}
+              {% if membership.endDate > currentTime %}
+                <p>You are currently a Gold member.</p>
+              {% else %}
+                <p>Your Gold membership has expired.</p>
+                <a href="/pay/gold" class="btn btn-primary mt-auto">Renew</a>
+              {% endif %}
+            {% else %}
+              <a href="cancel_membership" class="btn btn-primary mt-auto">Cancel Platinum</a>
+            {% endif %}
+          {% else %}
+              <a href="/pay/gold" class="btn btn-primary mt-auto">Join</a>
+
+          {% endif %}
+        {% else %}
+          <a href="/login" class="btn btn-primary mt-auto" >Login to Join</a>
+        {% endif %}
+    </div>
+  </div>
+
+  <div class="col-sm card px-0 m-1">
+    <div class="card-header fs-2 bg-platinum fw-bold text-black text-center">Platinum</div>
+    <h2 class="card-title pricing-card-title pt-3 pb-0 text-center" aria-label="Price of subscription">£{% for price in prices %} {% if price.name == "Year" %} {{price.price}} {% endif %}{% endfor %}<small class="text-muted">/ yearly</small></h2>
+    <div class="card-body">
+        <ul>
+          <li>Access to all of our facilities and activities for a year.</li>
+          <li>Available to anyone aged 16 or over.</li>
+          <li>Our membership is a rolling contract, so you can cancel at any time.</li>
+        </ul>
+    </div>
+    <div class="card-footer d-grid gap-2">
+        {% if current_user.is_authenticated %}
+          {% if membership %}
+            {% if membership.entryType == 2 %}
+              {% if membership.endDate > currentTime %}
+                <p>You are currently a Platinum member.</p>
+              {% else %}
+                <p>Your Platinum membership has expired.</p>
+                <a href="/pay/platinum" class="btn btn-primary mt-auto">Renew</a>
+              {% endif %}
+            {% else %}
+              <a href="/cancel_membership" class="btn btn-primary mt-auto">Cancel Gold</a>
+            {% endif %}
+          {% else %}
+{#            <a href="/card_payment?Item=3" class="btn btn-primary mt-auto">Join</a>#}
+              <a href="/pay/platinum" class="btn btn-primary mt-auto">Join</a>
+          {% endif %}
+        {% else %}
+          <a href="/login" class="btn btn-primary mt-auto">Login to Join</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

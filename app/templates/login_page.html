@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-xl-8 card px-0 mx-auto my-2">
+            <div class="card-header fs-4 fw-semibold">
+                Login
+            </div>
+            <form action="" method="post" name="Login_Form">
+                <div class="card-body">
+                    {{ form.hidden_tag() }}
+                    {{ form.username.label(class_="my-2 fw-semibold") }}
+                    {{ form.username(class_='form-control') }}
+                    {{ form.password.label(class_="my-2 fw-semibold") }}
+                    {{ form.password(class_='form-control') }}
+                </div>
+                <div class="card-footer">
+                    <input type="submit" class="btn btn-primary" value="Login">
+                    <a href="/forgot_password"><button type="button" class="btn btn-secondary">Forgot Password</button></a>
+                    <a href="/create_account"><button type="button" class="btn btn-secondary">Create Account</button></a>
+                </div>
+            </form>
+        </div>
+        <div class="col-xl-3 card px-0 mx-auto my-2">
+            <div class="card-header fs-4">
+                Other Login Methods
+            </div>
+            <div class="btn-group my-2 mx-3">
+                <button type="button" class="btn btn-sm btn-dark text-uppercase p-1" id="login-list-button">Login</button>
+                <button type="button" class="btn btn-sm btn-light text-uppercase p-1" id="signup-list-button">Sign Up</button>
+            </div>
+            <ul class="card-body list-group list-group-flush px-0" id="login-list">
+                <li class="list-group-item d-grid gap-2">
+                    <a href="/login_with_google" class="btn btn-primary d-inline-flex align-items-center justify-content-center"><i class="ri-google-fill me-2 fs-2"></i>Login with Google</a>
+                    <a href="/login_with_facebook" class="btn btn-primary d-inline-flex align-items-center justify-content-center"><i class="ri-facebook-fill me-2 fs-2"></i>Login with Facebook</a>
+                    <span class="btn bg-none">
+                </li>
+            </ul>
+            <ul class="card-body list-group list-group-flush px-0 hidden" id="signup-list">
+                <li class="list-group-item d-grid gap-2">
+                    <a href="/create_account_with_google" class="btn btn-primary d-inline-flex align-items-center justify-content-center"><i class="ri-google-fill me-2 fs-2"></i>Sign up with Google</a>
+                    <a href="/create_account_with_facebook" class="btn btn-primary d-inline-flex align-items-center justify-content-center"><i class="ri-facebook-fill me-2 fs-2"></i>Sign up with Facebook</a>
+                    <span class="btn bg-none">
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script src="login_page.js"></script>
+{% endblock %}

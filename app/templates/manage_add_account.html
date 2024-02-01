@@ -1,0 +1,17 @@
+{% from "create_account.html" import createAccountCard with context %}
+{% block title %}Add Account{% endblock %}
+{% extends "base.html" %}
+{% block content %}
+    <script src="/static/create_account.js"></script>
+    <link rel="stylesheet" href="../static/create_account.css" />
+    <div class="row">
+        {% if accType == "addManager" %}
+            {% set title = "Add Manager" %}
+        {% elif accType == "addEmployee" %}
+            {% set title = "Add Employee" %}
+        {% elif accType == "addUser" %}
+            {% set title = "Add User" %}
+        {% endif %}
+        {{ createAccountCard(form, title) }}
+    </div>
+{% endblock %}

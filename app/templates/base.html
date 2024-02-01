@@ -1,0 +1,192 @@
+<!-- Macro for creating navbar buttons that disable themselves automatically when on their page. -->
+{% macro navURL(route, name, color, classes="", badge=None) -%}
+    {% set onPage = False %}
+    {% if route in url_for(request.endpoint, **request.view_args) %}
+        {% set onPage = True %}
+    {% endif %}
+    <a href="{{ route }}" class="btn {% if not onPage %}btn-{{ color }}{% endif %} shadow {{ classes }} my-1 {% if onPage %}bg-info-subtle text-info-emphasis disabled{% endif %}">{{ name }} {% if badge %}<span class="badge bg-danger ms-1">{{ badge }}</span>{% endif %}</a>
+{% endmacro -%}
+
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light" moznomarginboxes mozdisallowselectionprint>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="theme-color" content="#ffffff">
+        <!-- Favicons -->
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="180x180" href="/favicon-180.png">
+        <link rel="icon" type="image/png" sizes="128x128" href="/favicon-128.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+        <link rel="manifest" href="/site.webmanifest">
+        <meta name="msapplication-TileColor" content="#b91d47">
+        <meta name="theme-color" content="#ffffff">
+
+        <!-- BS5 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+        <!-- RemixIcon -->
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet" crossorigin="anonymous">
+        
+        <link href="open-color.css" rel="stylesheet" crossorigin="anonymous">
+        <link href="theme.css" rel="stylesheet" crossorigin="anonymous">
+        <link href="base.css" rel="stylesheet" crossorigin="anonymous">
+        <script language="JavaScript" type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <title>{% block title %}{% endblock %}{% if self.title() %} - {% endif %}GymCorp</title>
+    </head>
+    <body>
+        <nav class="navbar fixed-top navbar-dark bg-frosted navbar-expand-xl py-2">
+            <div class="container-fluid">
+                <a href="/" class="navbar-brand d-flex align-items-center">
+                    {# 
+                    <span class="ri-run-line mx-4 fs-2"></span>
+                    <span class="fw-bold">GymCorp</span>
+                    #}
+                    <div class="m-1">
+                        {# <img src="/banner-inverted.svg" alt="GymCorp" height="50"> #}
+                        {{ logo }}
+                    </div>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsible-nav-group" aria-controls="collapsible-nav-group" aria-expanded="false" aria-label="Toggle Navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="collapsible-nav-group">
+                    <ul class="navbar-nav me-auto">
+                        {# {% if not ( ("/login" in url_for(request.endpoint, **request.view_args)) or
+                        ("/create_account" in url_for(request.endpoint, **request.view_args)) ) %} #}
+                        <div class="btn-toolbar" role="toolbar" id="base-nav">
+                            {% if "accountType" in session and (session["accountType"] == "Manager" or session["accountType"] == "Employee") and ("/manage" in url_for(request.endpoint, **request.view_args) or "user" in url_for(request.endpoint, **request.view_args)) %}
+                                <div class="mx-1 btn-group" role="group">
+                                    {{ navURL("/login", "Home", "secondary") }}
+                                </div>
+                            {% endif %}
+                            {% if "accountType" in session and session["accountType"] == "Manager" %}
+                                {% if "/manage" not in url_for(request.endpoint, **request.view_args) %}
+                                    <div class="mx-1 btn-group" role="group">
+                                        {{ navURL("/management", "Management", "secondary") }}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                            {% if "accountType" in session and (session["accountType"] == "Manager" or session["accountType"] == "Employee") %}
+                                {% if "user" not in url_for(request.endpoint, **request.view_args) %}
+                                    <div class="mx-1 btn-group" role="group">
+                                        {{ navURL("/user_booking", "Manage Users", "secondary") }}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                            <div class="mx-1 btn-group" role="group">
+                                {% if "accountType" in session and (session["accountType"] == "Manager" and "/manage" in url_for(request.endpoint, **request.view_args)) %}
+                                    {{ navURL("/manage_activities_facilities", "Change activities/facilities", "light") }}
+                                    {{ navURL("/manage_staff", "Add staff", "light") }}
+                                {% elif "accountType" in session and (session["accountType"] == "Employee" or session["accountType"] == "Manager") and "user" in url_for(request.endpoint, **request.view_args) %}
+                                    {{ navURL("/user_booking", "User Booking", "light") }}
+                                    {{ navURL("/view_user_bookings", "View User Bookings", "light") }}
+                                {% else %}
+                                    {{ navURL("/facilities", "Facilities", "light") }}
+                                    {{ navURL("/activities", "Activities", "light") }}
+                                {% endif %}
+                            </div>
+                            <div class="mx-1 btn-group" role="group">
+                                {% if "accountType" in session and (session["accountType"] == "Manager" and "/manage" in url_for(request.endpoint, **request.view_args)) %}
+                                    {{ navURL("/manage_prices", "Change pricing", "light") }}
+                                    {{ navURL("/manage_discount", "Change discount", "light") }}
+                                {% elif "accountType" in session and (session["accountType"] == "Employee" or session["accountType"] == "Manager") and "user" in url_for(request.endpoint, **request.view_args) %}
+                                {% else %}
+                                    {{ navURL("/pricing", "Pricing", "light") }}
+                                    {% if current_user.is_authenticated %}
+                                        {{ navURL("/account_info", "Account Info", "light") }}
+                                        {{ navURL("/bookings", "My Bookings", "secondary") }}
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            {% if "accountType" in session and (session["accountType"] == "Manager" and "/manage" in url_for(request.endpoint, **request.view_args)) %}
+                                <div class="mx-1 btn-group" role="group">
+                                    {{ navURL("/management_graphs", "Usage/Sales", "light") }}
+                                </div>
+                            {% endif %}
+                            {% if "accountType" in session and ("basket" in session and (session["basket"] | selectattr("accountId", "equalto", current_user.id) | list | length) > 0) %}
+                                <div class="mx-1 btn-group" role="group">
+                                    {{ navURL("/checkout", "Basket", "primary", "", session["basket"]|length) }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </ul>
+                    <div class="d-flex btn-group mx-2" role="group" id="nav-login-signup">
+                        <button class="btn btn-warning shadow my-1" id="theme-toggle-button" aria-label="Toggle Light/Dark Theme"><i class="ri-sun-line"></i></button>
+                        {% if current_user.is_authenticated %}
+                        {{ navURL("/logout", "Log Out", "primary") }}
+                        {% else %}
+                        {{ navURL("/login", "Login", "secondary") }}
+                        {{ navURL("/create_account", "Sign up", "primary") }}
+                        {% endif %}
+                    </div>
+                {# {% endif %} #}
+                </div>
+            </div>
+        </nav>
+        <div class="alert-box floating"></div>
+        <div class="page">
+            {% block content %}{% endblock %}
+            <div class="row my-4">
+                <div class="col text-muted">
+                    <div class="row fs-6">
+                        <span class="fw-semibold">Address</span>
+                        <span>123 A Street,
+                                Leeds,
+                                LS9 5TL
+                                United Kingdom
+                        </span>
+                    </div>
+                    <div class="row fs-6">
+                        <span class="fw-semibold">Phone</span>
+                        <span>+44 7999 999111</span>
+                    </div>
+                </div>
+                <div class="col text-muted">
+                    <div class="row fs-6">
+                        <span class="link-muted"><span class="fw-semibold me-2">Instagram</span><a href="https://instagram.com">@GymCorp</a></span>
+                    </div>
+                    <div class="row fs-6">
+                        <span class="link-muted"><span class="fw-semibold me-2">Twitter</span><a href="https://twitter.com">@GymCorpUK</a></span>
+                    </div>
+                    <div class="row fs-6">
+                        <span class="link-muted"><span class="fw-semibold me-2">Facebook</span><a href="https://facebook.com">@TheGymCorp</a></span>
+                    </div>
+                </div>
+                <div class="col text-muted fw-semibold">
+                    <div class="row fs-6">
+                        <span class="link-muted"><a href="/login">Login</a></span>
+                    </div>
+                    <div class="row fs-6">
+                        <span class="link-muted"><a href="/create_account">Create Account</a></span>
+                    </div>
+                    <div class="row fs-6">
+                        <span class="link-muted"><a href="/forgot_password">Forgot Password</a></span>
+                    </div>
+                </div>
+            </div>
+            <div class="my-2 fs-6 d-grid justify-items-center">
+                <p class="fw-semibold">&#169; 2023 GymCorp</p>
+            </div>
+        </div>
+    </body>
+    <!-- BS5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>
+    <script src="alert.js"></script>
+    {% if alert is defined and alert.color is defined %}
+        <script>
+            newAlert("{{ alert.color }}", "{{ alert.start }}", "{{ alert.msg }}", "{{ alert.timeout }}");
+        </script>
+    {% endif %}
+    {% if redirect is defined and redirect.url is defined %}
+        <script>
+            setTimeout(() => {
+                window.location.href = "{{ redirect.url }}";
+            }, {{ redirect.timeout }});
+        </script>
+    {% endif %}
+    <script src="theme.js"></script>
+</html>

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Staff{% endblock %}
+{% macro genTable(accType) -%}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">First name</th>
+            <th scope="col">Surname</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Type</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+            {% if user.accountType == accType %}
+                <tr>
+                    <th scope="row">{{ user.id }}</th>
+                    <td>{{ user.firstname }}</td>
+                    <td>{{ user.surname }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <!-- Note: "nbsp"s are so that the arrow in the select doesn't overlap the text on small screens. -->
+                    <td class="mw-max-content">
+                        <form action="" method="post" class="input-group">
+                            <select autocomplete="off" class="form-select form-select-sm manage-account-type" aria-label="Account type selection" name="manage-account-type">
+                                <option value="User" {% if accType == AccountType.User %}selected{% endif %}>User&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                <option value="Employee" {% if accType == AccountType.Employee %}selected{% endif %}>Employee&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                <option value="Manager" {% if accType == AccountType.Manager %}selected{% endif %}>Manager&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                            </select>
+                            <button type="submit" class="btn btn-danger" name="delete_account.{{ user.id }}" aria-label="Delete Account">&times;</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endmacro -%}
+
+
+{% block content %}
+    <h1 class="title">Manage staff</h1>
+    <div class="card my-2" id="managers_list">
+        <div class="card-header fs-4">
+            <form action="" method="post">
+                <span class="fw-semibold">Managers</span>
+                <button type="submit" class="btn btn-sm btn-primary mx-2" name=add_account value="addManager" aria-label="Create a new Manager account">Add +</button>
+            </form>
+        </div>
+        <div class="card-body table-responsive">
+            {{ genTable(AccountType.Manager) }}
+        </div>
+    </div>
+    <div class="card my-2" id="employees_list">
+        <div class="card-header fs-4">
+            <form action="" method="post">
+            <span class="fw-semibold">Employees</span>
+                <button type="submit" class="btn btn-sm btn-primary mx-2" name=add_account value="addEmployee" aria-label="Create a new Employee account">Add +</button>
+            </form>
+        </div>
+        <div class="card-body table-responsive">
+            {{ genTable(AccountType.Employee) }}
+        </div>
+    </div>
+    <div class="card my-2" id="users_list">
+        <div class="card-header fs-4">
+            <form action="" method="post">
+                <span class="fw-semibold">Users</span>
+                <button type="submit" class="btn btn-sm btn-primary mx-2" name=add_account value="addUser" aria-label="Create a new User">Add +</button>
+            </form>
+        </div>
+        <div class="card-body table-responsive">
+            {{ genTable(AccountType.User) }}
+        </div>
+    </div>
+
+    <script src="manage_staff.js"></script>
+{% endblock %}

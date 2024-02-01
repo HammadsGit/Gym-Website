@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Add Facility{% endblock %}
+{% block content %}
+    <h2>Add facility</h2>
+    <form class="card card-body form" action="" method="post">
+        <label class="form-label py-1" for="facilityName">Facility Name:</label>
+        <div class="input-group">
+            <input class="form-control" type="text" id="facilityName" name="facilityName">
+        </div>
+        <label class="form-label py-1" for="facilityCapacity">Capacity:</label>
+        <div class="input-group">
+            <input class="form-control" type="number" id="facilityCapacity" name="facilityCapacity" min="0">
+        </div>
+        <label class="form-label py-1" for="facilityOpen">Opening time:</label>
+        <div class="input-group">
+            <input class="form-control" type="time" id="facilityOpen" name="facilityOpen" value="08:00">
+        </div>
+        <label class="form-label py-1" for="facilityClose">Closing time:</label>
+        <div class="input-group">
+            <input class="form-control" type="time" id="facilityClose" name="facilityClose" value="22:00">
+        </div>
+        <div class="d-grid gap-2 my-2">
+            <button class="btn btn-primary" type="submit">Add</button>
+        </div>
+    </form>
+{% endblock %}

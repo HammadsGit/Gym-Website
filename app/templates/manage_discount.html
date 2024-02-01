@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Discount{% endblock %}
+{% block content %}
+    <h1 class="title text-center mb-3">Manage discount</h1>
+    <form action="" method="post" name="change_discount">
+        <div class="row">
+            <div class="col-sm-6 card px-0 m-1 mx-auto">
+                <div class="card-header fs-5 fw-bold">
+                    Current discount percentage: {{ discountValue.price * 100 }}%
+                </div>
+                <div class="card-body">
+                    <label for="bronze_price" class="form-label">New discount percentage:</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="discount_value" name="discount_value" min="0" max="100">
+                        <span class="input-group-text">%</span>
+                    </div>
+                    <div class="d-grid gap-2 my-2">
+                        <button type="submit" class="btn btn-primary">Change</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

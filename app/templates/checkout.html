@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+    <div class="card">
+        <div class="card-header fs-4">
+            <span class="fw-semibold">Checkout<span>
+        </div>
+        <table class="table mx-2">
+            <thead>
+                <tr>
+                    <th scope="col">Activity</th>
+                    <th scope="col" class="text-align-end pe-4">Price</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for bk in bookings %}
+                    <tr>
+                        <td>
+                            <span class="fs-5 fw-semibold">{{ bk.name }}</span>
+                            <ul>
+                                <li>{{ bk.time }}</li>
+                                <li>Facility: {{ bk.facility }}</li>
+                                {% if bk.teamBooking %}
+                                <li>Team Booking</li>
+                                {% endif %}
+                            </ul>
+                        </td>
+                        <td class="text-align-end">
+                            <span class="pe-4">£{{ bk.price }}</span>
+                            <span class="btn btn-sm btn-danger rounded-pill checkout-delete-item" aria-label="Remove from basket" id="{{ bk.id }}">&times;</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td class="text-align-end">
+                        <span class="fw-bold fs-5 pe-4">Sum: £{{ priceBeforeDiscount }}</span>
+                    </td>
+                </tr>
+            {% if discount %}
+                <tr>
+                    <td></td>
+                    <td class="text-align-end">
+                        <span class="badge rounded-pill bg-primary py-2 my-1 me-4">
+                            <span class="fs-6 p-2">Discount ({{ discountString }}): - £{{ discountSubtracted }}</span>
+                        </span>
+                    </td>
+                </tr>
+            {% endif %}
+                <tr>
+                    <td></td>
+                    <td class="text-align-end">
+                        <span class="fw-bold fs-4 pe-4">Total: £{{ totalPrice }}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="card-footer d-grid gap-2">
+            <a href="/pay/single" class="btn btn-primary" class="checkout-button">Checkout</a>
+        </div>
+    </div>
+    <script src="checkout.js"></script>
+{% endblock %}

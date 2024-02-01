@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "gymcorp-website"
+version = "0.1.0"
+description = "Booking and membership system for a Gym."
+authors = ["Harvey Tindall <hrfee@protonmail.ch>, Robert Pettit <sc21rnip@leeds.ac.uk>, Hammad Shahid <88449337+HammadsGit@users.noreply.github.com>, Haluk Sonmezler <sc212hs@leeds.ac.uk>, Savan Hathalia <sc21sh@leeds.ac.uk>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "app"}]
+include = ["app/static/*", "app/templates/*", "cert.pem", "key.pem"]
+
+
+[tool.poetry.dependencies]
+python = "^3.8"
+Flask = "~2.2.3"
+Flask-Login = "^0.6.2"
+Flask-Mail = "^0.9.1"
+Flask-Migrate = "^4.0.0"
+Flask-SQLAlchemy = "^3.0.2"
+Flask-WTF = "^1.0.1"
+stripe = "^5.3.0"
+google-auth-oauthlib = "^0.4.6"
+flask-dance = "^6.2.0"
+
+[tool.poetry.scripts]
+gymcorp = 'app:main'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

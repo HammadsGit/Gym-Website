@@ -1,0 +1,86 @@
+{% macro createAccountCard(form, title) -%}
+    <div class="card px-0">
+        <div class="card-header fs-4 fw-semibold">
+            <div class="d-flex flex-expand-row align-items-center">
+                <span class="align-items-center">{{ title }}</span>
+                <span>
+                    <a href="/create_account_with_facebook" class="btn btn-primary d-inline-flex align-items-center"><i class="ri-facebook-fill me-2 fs-5"></i>Sign up with Facebook</a>
+                    <a href="/create_account_with_google" class="btn btn-primary d-inline-flex align-items-center"><i class="ri-google-fill me-2 fs-5"></i>Sign up with Google</a>
+                </span>
+            </div>
+        </div>
+        <form action="" method="post" name="create_account">
+            <div class="card-body">
+                <div class="alert-box single"></div>
+                {{ form.hidden_tag() }}
+                {{ form.username.label(class_="my-2 fw-semibold") }}
+                {{ form.username(class_='form-control') }}
+                {{ form.first_name.label(class_="my-2 fw-semibold") }}
+                {{ form.first_name(class_='form-control') }}
+                {{ form.last_name.label(class_="my-2 fw-semibold") }}
+                {{ form.last_name(class_='form-control') }}
+                {{ form.email.label(class_="my-2 fw-semibold") }}
+                {{ form.email(class_='form-control') }}
+                {{ form.date_of_birth.label(class_="my-2 fw-semibold") }}
+                {{ form.date_of_birth(class_='form-control') }}
+                <div class="form-group">
+                    <label for="addressGroup" class="my-2 fw-bold">Address</label>
+                    <div id="addressGroup">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                {{ form.AddressLine1.label(class_="my-2 fw-semibold") }}
+                                {{ form.AddressLine1(class_='form-control') }}
+                            </div>
+                            <div class="col-sm-4">
+                                {{ form.AddressLine2.label(class_="my-2 fw-semibold") }}
+                                {{ form.AddressLine2(class_='form-control') }}
+                            </div>
+                            <div class="col-sm-4">
+                                {{ form.AddressLine3.label(class_="my-2 fw-semibold") }}
+                                {{ form.AddressLine3(class_='form-control') }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                {{ form.post_code.label(class_="my-2 fw-semibold") }}
+                                {{ form.post_code(class_='form-control') }}
+                            </div>
+                            <div class="col-sm-4">
+                                {{ form.City.label(class_="my-2 fw-semibold") }}
+                                {{ form.City(class_='form-control') }}
+                            </div>
+                            <div class="col-sm-4">
+                                {{ form.Country.label(class_="my-2 fw-semibold") }}
+                                {{ form.Country(class_='form-control') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{ form.Phone_Number.label(class_="my-2 fw-semibold") }}
+                {{ form.Phone_Number(class_='form-control') }}
+                {{ form.password.label(class_="my-2 fw-semibold") }}
+                {{ form.password(class_='form-control', id='password', onkeyup='checkPasswordMatch()') }}
+                <label for="confirmPassword" class="my-2 fw-semibold">Confirm Password</label>
+                {{ form.password(class_='form-control', id='confirmPassword', onkeyup='checkPasswordMatch()') }}
+            </div>
+            <div class="card-footer">
+                <input
+                type="submit"
+                class="btn btn-secondary"
+                id="submit"
+                value="Create account"
+                onkeyup="checkPasswordMatch()"
+                />
+            </div>
+        </form>
+    </div>
+{% endmacro -%}
+{% extends "base.html" %}
+{% block title %}Create Account{% endblock %}
+{% block content %}
+    <div class="row">
+        {{ createAccountCard(form, "Create Account") }}
+    </div>
+    <script src="/static/create_account.js"></script>
+    <link rel="stylesheet" href="../static/create_account.css" />
+{% endblock %}

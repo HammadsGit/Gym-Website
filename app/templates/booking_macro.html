@@ -1,0 +1,96 @@
+{% macro receiptDependencies() -%}
+    <script src="receipt.js"></script>
+{% endmacro -%}
+
+{% macro genBooking(booking, cancellable=True, printable=True) -%}
+    <li class="list-group-item">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item fs-5 py-1 d-flex flex-expand-row">
+                <span class="col">
+                    <span class="fw-semibold me-1" aria-label="Activity Name">{{ booking.name }}</span>
+                    <span class="text-muted me-1 fs-6 text-nowrap" aria-label="Booking Start & End Time">from {{ booking.time }}</span>
+                </span>
+                {% if cancellable %}
+                    <span class="col-3 float-end">
+                        <div class="h-100 d-flex align-items-center justify-content-end">
+                            <a href="/cancel_booking/{{ booking.id }}" class="btn btn-sm btn-outline-danger" aria-label="Cancel Booking">Cancel</a>
+                        </div>
+                    </span>
+                {% endif %}
+            </li>
+            <li class="list-group-item fs-6 py-1" aria-label="Location of activity">Location:
+                {{ booking.facility }}
+                {% if user and cancellable %}
+                <span class="col-3 float-end">
+                    <div class="h-100 d-flex align-items-center justify-content-end">
+                        {% if printable %}
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#popup-box{{ booking.id }}">
+                                Print Receipt
+                            </button>
+                            <div id="popup-box{{ booking.id }}" class="modal fade" tabindex="-1" aria-label="Receipt" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <div class="col-12 modal-title text-center">
+                                                {{ logo }}
+                                                <h2 class="fs-5 py-3">
+                                                    Booking Receipt
+                                                </h2>
+                                            </div>
+                                            <button type="button" class="btn-close position-relative end-2" data-bs-dismiss="modal" aria-label="Close Receipt"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="w-100">
+                                                <tr>
+                                                    <th>Activity:</th>
+                                                    <td>{{ booking.name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Date:</th>
+                                                    <td class="receipt-date">{{ booking.date }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Customer Name:</th>
+                                                    <td>{{ current_user.firstname }} {{ current_user.surname }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Facility:</th>
+                                                    <td>{{ booking.facility }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Booking Time:</th>
+                                                    <td>{{ booking.time }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Membership Plan:</th>
+                                                    <td>{% if membership.entryType == 1 %}
+                                                        Gold
+                                                        {% elif membership.entryType == 2 %}
+                                                        Platinum
+                                                        {% else %}
+                                                        None (£8 for session)
+                                                    {% endif %}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button onclick="downloadPDF('{{ booking.id }}')" class="btn btn-primary selectable">Print</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </span>
+                {% endif %}
+            </li>
+            <li class="list-group-item fs-6 py-1" aria-label="Date of activity">
+                {{ booking.date }}
+            </li>
+            <li class="list-group-item fs-6 py-1 d-flex align-items-center flex-expand-row" aria-label="Duration of activity">
+                Duration:
+                {{ booking.duration }}
+            </li>
+        </ul>
+    </li>
+{% endmacro -%}

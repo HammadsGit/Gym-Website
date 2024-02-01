@@ -1,0 +1,60 @@
+{% from "activities.html" import genDateButton, genFacilityButton, listActivities with context %}
+{% extends "base.html" %}
+{% block title %}User Booking{% endblock %}
+{% block content %}
+    {% if current_user.is_authenticated %}
+    <div class="row py-1">
+        <div class="col-sm-5 card mx-auto px-0 my-1">
+            <div class="card-header fs-4 fw-semibold">
+                User Account
+            </div>
+            <p class="py-2 px-3">Select the user to make the booking for.</p>
+
+            <select name="users" class="form-group mb-3 mt-0 mx-3" id="user-booking">
+                {% for user in users %}
+                    <option name="user-booking" value="{{ user.id }}">{{ user.username }}</option>
+                {% endfor %}
+            </select>
+
+        </div>
+        <div class="col-sm-6 card mx-auto px-0 my-1">
+            <div class="card-header fs-4 fw-semibold">
+                Date
+            </div>
+            <p class="py-2 px-3">Pick a date to see available slots on that day and week.</p>
+
+            <input type="date" class="form-group mb-3 mt-0 mx-3" id="activities-datepicker" value="{{ searchedDate }}" min="{{ currentDate }}">
+        </div>
+    </div>
+    {% endif %}
+    <div class="row py-1">
+        <div class="col-sm-5 card mx-auto px-0 my-1">
+            <div class="card-header fs-4">
+                <span class="fw-semibold">Activities</span>
+            </div>
+            <ul class="list-group list-group-flush card-body p-2">
+                {{ listActivities("Activity", activities, referrer="user_booking") }}
+            </ul>
+        </div>
+        <div class="col-sm-6 card mx-auto px-0 my-1">
+            <div class="card-header fs-4">
+                <span class="fw-semibold">Classes</span>
+            </div>
+            <ul class="list-group list-group-flush card-body p-2">
+                {{ listActivities("Booked Activities", classes, referrer="user_booking") }}
+            </ul>
+        </div>
+    </div>
+<script>
+{% if accountId is defined %}
+    const preSelect = true;
+    const preSelectId = "{{ accountId }}";
+{% else %}
+    const preSelect = false;
+{% endif %}
+    const referrer = "user_booking";
+</script>
+<script src="time.js"></script>
+<script src="activities.js"></script>
+{% endblock %}
+

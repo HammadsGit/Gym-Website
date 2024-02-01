@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Activities &amp; Classes{% endblock %}
+{% macro genDateButton(day, date, datePast) -%}
+    <div class="d-grid gap-2 w-100 px-quarter">
+        <button type="button" class="btn btn-light btn-sm w-100 date-selector-button date-section-{{ day }} {% if datePast %}disabled{% endif %}" aria-label="Day/Date selection button for booking">{{ day[:3] }}. {{ date }}</button>
+    </div>
+{% endmacro -%}
+{% macro genFacilityButton(facilityId, name) -%}
+    <div class="d-grid gap-2 w-100 px-quarter">
+        <button type="button" class="btn btn-light btn-sm w-100 facility-selector-button facility-selector-{{ facilityId }}" aria-label="Facility selection button for booking">{{ name }}</button>
+    </div>
+{% endmacro -%}
+{% macro listActivities(term, acts, referrer="activities") -%}
+        {% for activity in acts %}
+            <li class="list-group-item card m-1 p-3 activity-item no-shadow border" id="{{ activity.id }}" {% if activity.length is defined %}activity-length="{{ activity.length }}"{% endif %}>
+                <div class="row">
+                    <div class="col">
+                        <span class="fs-5 fw-semibold" aria-label="Name of activity">{{ activity.name }}</span>
+                        <ul>
+                            {% if activity.length is defined %}
+                                <li aria-label="Duration of activity">Lasts {{ activity.length }} hour{% if activity.length > 1 %}s{% endif %}</li>
+                            {% endif %}
+                        </ul>
+                        {% if activity.slots is defined %}
+                            <button class="btn btn-primary activity-book-button my-2" aria-label="Button to show available timeslots for activity on searched day">Book</button>
+                            <div class="activity-booking-area hidden">
+                                {% if activity.facilities|length > 1 %}
+                                    <div class="flex-expand-row my-2 facility-section">
+                                        {% for id, facility in activity.facilities.items() %}
+                                            {{ genFacilityButton(id, facility) }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% for id, periods in activity.slots.items() %}
+                                    <div class="facility-time-section-start facility-{{ id }} gap-2 {% if activity.facilities|length != 1 %}hidden{% endif %}">
+                                        <div class="flex-expand-row">
+                                            <p class="time-start fs-5 fw-bold">Start:<p>
+                                        </div>
+                                        {% for period in periods %}
+                                            <button class="btn btn-outline-info my-1 mx-quarter time-period-start period-{{ period[0] }}" aria-label="Button to select start time of booking">{{ period[0] }}</button>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="facility-time-section-end facility-{{ id }} gap-2 hidden">
+                                        <div class="flex-expand-row">
+                                            <p class="time-end fs-5 fw-bold">End:<p>
+                                            <button class="btn btn-sm btn-danger time-end-back" aria-label="Go back to start time selection"><i class="ri-arrow-left-s-line"></i> Back</button>
+                                        </div>
+                                        {% for period in periods %}
+                                            <button class="btn btn-outline-info my-1 mx-quarter time-period-end period-{{ period[1] }}" aria-label="Button to select end time of booking">{{ period[1] }}</button>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="col">
+                        <span class="fs-6 fw-bold my-1">Location{% if activity.facilities|length > 1 %}s{% endif %}</span>
+                        <ul aria-label="List of locations activity is available at">
+                            {% for id, facility in activity.facilities.items() %}
+                                <li class="facility-{{ id }}">{{ facility }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% if activity.times is defined %}
+                    <div class="col">
+                        <span class="fs-6 fw-bold my-1">Timeslots</span>
+                        {% if activity.facilities|length > 1 %}
+                            <div class="flex-expand-row my-2 facility-section">
+                                {% for id, facility in activity.facilities.items() %}
+                                    {{ genFacilityButton(id, facility) }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="flex-expand-row my-2">
+                            {% for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] %}
+                                {% if day in activity.times %}
+                                    {{ genDateButton(day, weekDayDates[loop.index-1], weekDayDatesPast[loop.index-1]) }}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% for day, times in activity.times.items() %}
+                            <div class="hidden date-time-section date-section-{{ day }} d-grid gap-2">
+                                {% for timeslot in times %}
+                                <a {% if timeslot.bookable and current_user.is_authenticated %}href="/add_booking/{{ current_user.id }}/class/{{ timeslot.activityLocationId }}/{{ searchedDate }}?referrer={{ referrer }}" initialhref="/add_booking/None/class/{{ timeslot.activityLocationId }}/{{ searchedDate }}?referrer={{ referrer }}" {% endif %} class="btn {% if timeslot.bookable %}btn-outline-info{% else %}btn-outline-danger{% endif %} my-1 mx-quarter timeslot timeslot-facility-{{ timeslot.facilityId }}" id="timeslot-{{ timeslot.activityLocationId }}" text="Starts {{ timeslot.start }}, ends {{ timeslot.end }}" aria-label="Timeslot for this class">{{ day }} {{ timeslot.start }} &#8212; {{ timeslot.end }}</a>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </li>
+        {% endfor %}
+{% endmacro -%}
+{% block content %}
+    {% if current_user.is_authenticated %}
+    <div class="row py-1 mx-3">
+        <div class="col-sm card px-0 my-1">
+            <div class="card-header fs-4 fw-semibold">
+                Date
+            </div>
+            <p class="py-2 px-3">Pick a date to see available slots on that day and week.</p>
+
+            <input type="date" class="form-group mb-3 mt-0 mx-3" id="activities-datepicker" value="{{ searchedDate }}" min="{{ currentDate }}" max="{{ maxDate }}" aria-label="Booking date selector">
+        </div>
+    </div>
+    {% endif %}
+    <div class="row py-1">
+        <div class="col-sm-5 card mx-auto px-0 my-1">
+            <div class="card-header fs-4">
+                <span class="fw-semibold">Activities</span>
+            </div>
+            <ul class="list-group list-group-flush card-body p-2">
+                {{ listActivities("Activity", activities) }}
+            </ul>
+        </div>
+        <div class="col-sm-6 card mx-auto px-0 my-1">
+            <div class="card-header fs-4">
+                <span class="fw-semibold">Classes</span>
+            </div>
+            <ul class="list-group list-group-flush card-body p-2">
+                {{ listActivities("Booked Activities", classes) }}
+            </ul>
+        </div>
+    </div>
+<script>
+    const referrer = "activities";
+</script>
+<script src="time.js"></script>
+<script src="activities.js"></script>
+{% endblock %}
+

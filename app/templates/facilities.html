@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Facilities{% endblock %}
+{% block content %}
+    <div class="card">
+        <div class="card-header fs-4">
+            <span class="fw-semibold">Facilities</span>
+        </div>
+        <ul class="list-group list-group-flush card-body p-2">
+            {% for facility in facilities %}
+            <li class="list-group-item card no-shadow border rounded m-1" id="{{ facility.id }}">
+                <div class="row">
+                    <div class="col-sm-4 my-2">
+                        <span class="fs-5 fw-semibold" aria-label="Facility Name">{{ facility.name }}</span>
+                    </div>
+                    <div class="col-sm-4 my-2">
+                        <ul>
+                            <li aria-label="Facility Capacity">Holds {{ facility.capacity }} people</li>
+                            <li aria-label="Facility Opening Time">Opens {{ facility.opens }}</li>
+                            <li aria-label="Facility Closing Time">Closes {{ facility.closes }} </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4 my-2">
+                        <span class="fs-6 fw-bold my-1" aria-label="List of activities available at facility">Activities</span>
+                        <ul>
+                            {% for activity in facility.activities %}
+                                <li>{{ activity }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

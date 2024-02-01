@@ -1,0 +1,73 @@
+{% extends "management.html" %}
+{% block title %}Manage Activities/Facilities{% endblock %}
+{% block content %}
+    <h1 class="title">Manage activities/facilities</h1>
+
+    <div class="card">
+        <div class="card-header fs-4">
+            <form action="" method="post">
+                <span class="fw-semibold">Facilities</span>
+                <button class="btn btn-sm btn-primary mx-2" id="show-add-facility" name="addFacility">+</button>
+            </form>
+        </div>
+        <ul class="list-group list-group-flush card-body p-2">
+            {% for facility in facilities %}
+            <li class="list-group-item card m-1" id="{{ facility.id }}">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <span class="fs-5 fw-semibold">
+                            <form action="" method="post" class="input-group mb-2">
+                                <input class="form-control fs-5 facility-name" type="text" value="{{ facility.name }}" id="{{ facility.id }}" aria-label="Facility Name">
+                                <button type="submit" class="btn btn-danger" name="delete_facility.{{ facility.id }}" text="Delete" aria-label="Delete Facility">&times;</button>
+                            </form>
+                        </span>
+                    </div>
+                    <div class="col-sm-4">
+                        <ul>
+                            <li>
+                                <div class="input-group my-2">
+                                    <span class="input-group-text">Capacity:</span>
+                                    <input type="number" class="form-control facility-capacity" value="{{ facility.capacity }}" id="{{ facility.id }}" min="0" aria-label="Facility Capacity">
+                                </div>
+                            </li>
+                            <li>
+                                <div class="input-group my-2">
+                                    <span class="input-group-text">Opens:</span>
+                                    <input type="time" class="form-control facility-opens" value="{{ facility.opens }}" id="{{ facility.id }}" aria-label="Facility Open Time">
+                                </div>
+                            </li>
+                            <li>
+                                <div class="input-group mt-2 mb-3">
+                                    <span class="input-group-text">Closes:</span>
+                                    <input type="time" class="form-control facility-closes" value="{{ facility.closes }}" id="{{ facility.id }}" aria-label="Facility Close Time">
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4">
+                        <form class="mb-3" action="" method="post">
+                            <span class="fs-6 fw-bold">Activities</span>
+                            <button type="submit" class="btn btn-sm btn-primary ms-2" name="addActivity.{{ facility.id }}" aria-label="Add Activity to Facility">+</button>
+                        </form>
+                        <ul>
+                            {% for activity in facility.activities %}
+                                <form action="" method="post">
+                                    <li>
+                                        <div class="input-group my-2">
+                                            <input type="text" class="form-control facility-activity" value="{{ activity }}" name="{{ activity }}" aria-label="Activity Name">
+                                            <button type="submit" class="btn btn-outline-primary" name="edit_activity.{{ facility.id }}.{{ activity }}" text="Edit" aria-label="Edit Activity"><i class="ri-edit-line"></i></button>
+                                            <button type="submit" class="btn btn-outline-danger" name="delete_activity.{{ facility.id }}.{{ activity }}" text="Delete" aria-label="Delete Activity from Facility">&times;</button>
+                                        </div>
+                                    </li>
+                                </form>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script src="manage_activities_facilities.js"></script>
+{% endblock %}
